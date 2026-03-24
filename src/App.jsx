@@ -1,135 +1,186 @@
-import React, { useEffect, useState } from 'react'
-import { Ellipsis } from 'lucide-react'
-import Details from './Details'
+import React, { useEffect, useState } from 'react';
+import { Plus, Trash2, LayoutList } from 'lucide-react';
 
 const App = () => {
-
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [allTasks, setAllTasks] = useState(JSON.parse(localStorage.getItem("myList")) || [])
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [allTasks, setAllTasks] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("myList")) || [];
+    } catch {
+      return [];
+    }
+  });
 
   const submitHandler = () => {
-    const addNewTask = [...allTasks]
-    if (title.trim() == '') {
+    const trimmedTitle = title.trim();
+    if (trimmedTitle === '') {
       console.log("Error: Empty Title");
-    } else {
-      const newTask = {
-        id: Date.now(),
-        title: title.trim(),
-        description: description.trim(),
-        isCompleted: false
-      }
-      addNewTask.push(newTask)
-      setAllTasks(addNewTask)
-
-      setTitle('')
-      setDescription('')
+      return;
     }
-  }
+
+    const newTask = {
+      id: Date.now(),
+      title: trimmedTitle,
+      description: description.trim(),
+      isCompleted: false
+    };
+
+    setAllTasks(prev => [...prev, newTask]);
+    setTitle('');
+    setDescription('');
+  };
 
   useEffect(() => {
-    localStorage.setItem("myList", JSON.stringify(allTasks))
-  }, [allTasks])
+    localStorage.setItem("myList", JSON.stringify(allTasks));
+  }, [allTasks]);
 
   const handleDelete = (idx) => {
-    const filteredTasks = allTasks.filter((e, index) => index !== idx)
-    setAllTasks(filteredTasks)
-  }
+    const filteredTasks = allTasks.filter((_, index) => index !== idx);
+    setAllTasks(filteredTasks);
+  };
 
   const handleComplete = (idx) => {
-    const filteredTasks = [...allTasks]
-    filteredTasks[idx].isCompleted = !filteredTasks[idx].isCompleted
-    setAllTasks(filteredTasks)
-  }
+    const newTasks = [...allTasks];
+    newTasks[idx].isCompleted = !newTasks[idx].isCompleted;
+    setAllTasks(newTasks);
+  };
 
   return (
-    <>
-      <div className='bg-gray-900 text-white p-6 sm:px-8 lg:px-10 py-6 sm:py-7 min-h-screen w-full font-sans flex flex-col gap-4'>
-
-        <h1 className='py-4 text-3xl sm:text-4xl lg:text-5xl text-center bg-gray-950 rounded-xl font-bold border-b border-gray-600'>
-          Todo
-        </h1>
-
-        <div className='flex flex-col gap-4 lg:flex-row lg:gap-4 min-h-125'>
-
-          {/* Form */}
-          <div className='p-5 bg-gray-950 w-full rounded-xl flex flex-col gap-5 border border-gray-600 shrink-0 lg:w-1/3'>
-            <h1 className='text-xl sm:text-2xl font-bold text-center'>Create New Todo Task</h1>
-
-            <div className='flex flex-col gap-4'>
-              <input
-                placeholder='Enter Task Title...'
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className='px-3 lg:px-4 py-3 w-full rounded bg-gray-800 outline-none'
-              />
-
-              <textarea
-                placeholder='Enter description...'
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                className='px-3 lg:px-4 py-3 w-full rounded bg-gray-800 resize-none outline-none'
-              ></textarea>
-
-              <button
-                onClick={submitHandler}
-                className='bg-rose-500 rounded px-6 py-3 w-full font-bold hover:bg-rose-700 transition'
-              >
-                ADD
-              </button>
-            </div>
+    <div className='min-h-screen bg-slate-100 text-slate-800 font-sans selection:bg-indigo-200 flex flex-col'>
+      {/* Header */}
+      <header className='w-full border-b border-slate-300 bg-white sticky top-0 z-10 shadow-sm'>
+        <div className='max-w-7xl mx-auto px-6 py-5 flex items-center justify-center gap-3'>
+          <div className='p-2 bg-indigo-200 text-indigo-600 rounded-xl shadow-sm'>
+            <LayoutList className='w-7 h-7' />
           </div>
-
-          {/* Tasks */}
-          <div className='p-5 bg-gray-950 rounded-xl flex flex-col gap-5 border border-gray-600 h-180  md:h-180 lg:h-140 w-full lg:w-2/3'>
-            <h1 className='text-xl sm:text-2xl font-bold text-center'>Recent Tasks</h1>
-
-            <div className='w-full flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 overflow-y-auto items-start pr-2'>
-
-              {allTasks.map(function (elem, idx) {
-                return (
-                  <div key={idx} className={`${elem.isCompleted ? 'bg-gray-950' : 'bg-gray-900'}  w-full min-h-56 border rounded-xl flex flex-col justify-between`}>
-
-                    <div className='w-full flex flex-col p-3 gap-5'>
-                      <div className='w-full flex'>
-                        <h3 className={`bg-amber-600 text-xl w-8/9 wrap-break-word leading-tight ${elem.isCompleted ? 'line-through opacity-60' : ''}`}>
-                          {elem.title}
-                        </h3>
-                        <Ellipsis className='hover:bg-black p-1  h-full rounded w-1/9' />
-                      </div>
-                      <h3 className={`text-gray-400 text-sm w-full wrap-break-word leading-tight ${elem.isCompleted ? 'line-through opacity-60' : ''}`}>
-                        {elem.description}
-                      </h3>
-                    </div>
-
-                    <div className='w-full flex flex-col sm:flex-row items-end p-2 gap-2'>
-                      <button
-                        onClick={() => handleComplete(idx)}
-                        className={`${elem.isCompleted ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-green-600 hover:bg-green-700'} rounded-xl py-2 w-full sm:w-1/2 font-semibold`}
-                      >
-                        {elem.isCompleted ? 'Undo' : 'Done'}
-                      </button>
-
-                      <button
-                        onClick={() => handleDelete(idx)}
-                        className='bg-rose-600 hover:bg-rose-700 rounded-xl py-2 w-full sm:w-1/2 font-semibold'
-                      >
-                        Delete
-                      </button>
-                    </div>
-
-                  </div>
-                )
-              })}
-
-            </div>
-          </div>
-
+          <h1 className='text-3xl font-extrabold tracking-tight text-slate-900'>
+            Task <span className='text-indigo-600'>Master</span>
+          </h1>
         </div>
-      </div>
-    </>
-  )
-}
+      </header>
 
-export default App
+      <main className='flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col lg:flex-row gap-8 items-start'>
+
+        {/* Form Section */}
+        <section className='w-full lg:w-1/3 lg:sticky lg:top-28 shrink-0'>
+          <div className='bg-white rounded-3xl p-6 sm:p-8 border border-slate-300 shadow-md relative'>
+            <div className='relative'>
+              <div className='mb-8 text-center sm:text-left'>
+                <h2 className='text-2xl font-bold text-slate-900 mb-2'>Create Task</h2>
+                <p className='text-sm text-slate-600'>What do you need to get done?</p>
+              </div>
+
+              <div className='flex flex-col gap-5'>
+                <div className='space-y-4'>
+                  <div>
+                    <input
+                      placeholder='Task title...'
+                      type="text"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      className='w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-4 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-600 transition-all shadow-sm'
+                    />
+                  </div>
+
+                  <div>
+                    <textarea
+                      placeholder='Add description (optional)...'
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={4}
+                      className='w-full bg-slate-50 border border-slate-300 rounded-2xl px-5 py-4 text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/10 focus:border-indigo-600 transition-all resize-none shadow-sm'
+                    ></textarea>
+                  </div>
+                </div>
+
+                <button
+                  onClick={submitHandler}
+                  disabled={!title.trim()}
+                  className='mt-2 w-full bg-indigo-500 hover:bg-indigo-600 disabled:opacity-50 disabled:hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 transition-all shadow-md active:scale-[0.98]'
+                >
+                  <Plus className='w-5 h-5' />
+                  ADD
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Tasks Section */}
+        <section className='w-full lg:w-2/3 flex flex-col gap-6'>
+          <div className='bg-indigo-300 flex items-center justify-between px-5 py-5 rounded-3xl'>
+            <h2 className='text-xl sm:text-2xl font-bold text-slate-900'>Recent Tasks</h2>
+            {allTasks.length > 0 && (
+              <span className='px-4 py-1.5 bg-indigo-50 rounded-full text-sm font-semibold text-indigo-600 border border-indigo-300 shadow-sm'>
+                {allTasks.length} {allTasks.length === 1 ? 'Task' : 'Tasks'}
+              </span>
+            )}
+          </div>
+
+          {allTasks.length === 0 ? (
+            <div className='w-full h-64 bg-slate-50 border-2 border-dashed border-indigo-200 rounded-3xl flex flex-col items-center justify-center text-slate-500 p-6 text-center shadow-sm'>
+              <div className='bg-indigo-50 p-4 rounded-full mb-4 shadow-sm border border-indigo-100'>
+                <LayoutList className='w-8 h-8 opacity-75 text-indigo-600' />
+              </div>
+              <p className='text-lg font-bold text-slate-800'>No tasks yet</p>
+              <p className='text-sm mt-1 text-slate-600'>Add a task to get started on your goals.</p>
+            </div>
+          ) : (
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-5 pb-10'>
+              {allTasks.map((elem, idx) => (
+                <div
+                  key={elem.id || idx}
+                  className={`group relative overflow-hidden rounded-3xl border border transition-all duration-300 flex flex-col h-full bg-white
+                    ${elem.isCompleted
+                      ? 'border-indigo-200 bg-indigo-500/50 opacity-80'
+                      : 'border-slate-300 shadow-md hover:shadow-lg hover:border-indigo-400'
+                    }
+                  `}
+                >
+                  <div className='p-6 flex-1 flex flex-col gap-3 relative z-10'>
+                    <h3 className={`font-bold text-xl leading-tight break-words pt-1
+                      ${elem.isCompleted ? 'line-through text-slate-500' : 'text-slate-900'}
+                    `}>
+                      {elem.title}
+                    </h3>
+
+                    {elem.description && (
+                      <p className={`text-sm break-words leading-relaxed mt-1 font-medium
+                        ${elem.isCompleted ? 'line-through text-slate-400' : 'text-slate-600'}
+                      `}>
+                        {elem.description}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className='p-4 border-t border-slate-200 bg-slate-50/50 mt-auto relative z-10 flex gap-3'>
+                    <button
+                      onClick={() => handleComplete(idx)}
+                      className={`flex-1 flex items-center justify-center py-2.5 px-4 rounded-xl font-bold border transition-all focus:ring-2 focus:outline-none shadow-sm ${elem.isCompleted
+                          ? 'border-amber-500 text-amber-900 bg-amber-200 hover:bg-amber-300 focus:ring-amber-500/30'
+                          : 'border-emerald-500 text-emerald-800 bg-emerald-200 hover:bg-emerald-300 focus:ring-emerald-500/30'
+                        }`}
+                    >
+                      {elem.isCompleted ? 'Undo' : 'Done'}
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(idx)}
+                      className='flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl border border-rose-500 text-rose-800 bg-rose-200 hover:bg-rose-300 font-bold transition-all focus:ring-2 focus:ring-rose-500/30 focus:outline-none shadow-sm'
+                    >
+                      <Trash2 className='w-[18px] h-[18px]' />
+                      Delete
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      </main>
+    </div>
+  );
+};
+
+export default App;
