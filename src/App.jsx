@@ -36,8 +36,15 @@ const App = () => {
   }, [allTasks]);
 
   const handleDelete = (idx) => {
-    const filteredTasks = allTasks.filter((_, index) => index !== idx);
-    setAllTasks(filteredTasks);
+
+    const isConfirmed = confirm("Are you sure you want to delete this item?");
+    if (isConfirmed) {
+      const filteredTasks = allTasks.filter((_, index) => index !== idx);
+      setAllTasks(filteredTasks);
+    } else {
+      return;
+    }
+
   };
 
   const handleComplete = (idx) => {
@@ -158,8 +165,8 @@ const App = () => {
                     <button
                       onClick={() => handleComplete(idx)}
                       className={`flex-1 flex items-center justify-center py-2.5 px-4 rounded-xl font-bold border transition-all focus:ring-2 focus:outline-none shadow-sm ${elem.isCompleted
-                          ? 'border-amber-500 text-amber-900 bg-amber-200 hover:bg-amber-300 focus:ring-amber-500/30'
-                          : 'border-emerald-500 text-emerald-800 bg-emerald-200 hover:bg-emerald-300 focus:ring-emerald-500/30'
+                        ? 'border-amber-500 text-amber-900 bg-amber-200 hover:bg-amber-300 focus:ring-amber-500/30'
+                        : 'border-emerald-500 text-emerald-800 bg-emerald-200 hover:bg-emerald-300 focus:ring-emerald-500/30'
                         }`}
                     >
                       {elem.isCompleted ? 'Undo' : 'Done'}
