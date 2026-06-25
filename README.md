@@ -1,16 +1,61 @@
-# React + Vite
+# Task Master — To-Do List App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A simple and clean to-do list app built as my first React learning project. It covers the core concepts of React like state management, hooks, and component structure, paired with a responsive UI using Tailwind CSS.
 
-Currently, two official plugins are available:
+![Task Master](public/logo.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- **Add tasks** with a title and an optional description
+- **Mark tasks as done** — completed tasks get a strikethrough style and a muted look
+- **Undo completion** to bring a task back to active
+- **Delete tasks** with a confirmation prompt to prevent accidental removal
+- **Persistent storage** — tasks are saved to `localStorage` so they survive page refreshes
+- **Task counter** showing how many tasks are in the list
+- **Empty state** with a friendly prompt when no tasks exist
+- Responsive layout — stacked on mobile, side-by-side on larger screens
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Tool | Purpose |
+|---|---|
+| React 19 | UI and state management |
+| Vite 7 | Build tool and dev server |
+| Tailwind CSS 4 | Styling |
+| Lucide React | Icons |
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start the dev server
+npm run dev
+
+# Build for production
+npm run build
+
+# Preview the production build
+npm run preview
+```
+
+## What I Learned
+
+This was my first hands-on project with React. Key concepts I practiced:
+
+- `useState` for managing form inputs and the task list
+- `useEffect` to sync state with `localStorage`
+- Lifting state and passing handlers as props concepts
+- Conditional rendering for the empty state and completed task styles
+- Controlled inputs for the form fields
+- Basic responsive layout with Tailwind CSS flexbox and grid utilities
+
+## Project Structure
+
+```
+src/
+├── App.jsx       # Main component — all logic and UI lives here
+├── main.jsx      # React root entry point
+└── index.css     # Tailwind import and custom scrollbar styles
+```

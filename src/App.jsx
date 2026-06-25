@@ -11,7 +11,6 @@ const App = () => {
       return [];
     }
   });
-
   const submitHandler = () => {
     const trimmedTitle = title.trim();
     if (trimmedTitle === '') {
@@ -138,7 +137,7 @@ const App = () => {
               {allTasks.map((elem, idx) => (
                 <div
                   key={elem.id || idx}
-                  className={`group relative overflow-hidden rounded-3xl border border transition-all duration-300 flex flex-col h-full bg-white
+                  className={`group relative overflow-hidden rounded-3xl border transition-all duration-300 flex flex-col h-full bg-white
                     ${elem.isCompleted
                       ? 'border-indigo-200 bg-indigo-500/50 opacity-80'
                       : 'border-slate-300 shadow-md hover:shadow-lg hover:border-indigo-400'
@@ -146,14 +145,14 @@ const App = () => {
                   `}
                 >
                   <div className='p-6 flex-1 flex flex-col gap-3 relative z-10'>
-                    <h3 className={`font-bold text-xl leading-tight break-words pt-1
+                    <h3 className={`font-bold text-xl leading-tight wrap-break-words pt-1
                       ${elem.isCompleted ? 'line-through text-slate-500' : 'text-slate-900'}
                     `}>
                       {elem.title}
                     </h3>
 
                     {elem.description && (
-                      <p className={`text-sm break-words leading-relaxed mt-1 font-medium
+                      <p className={`text-sm wrap-break-words leading-relaxed mt-1 font-medium
                         ${elem.isCompleted ? 'line-through text-slate-400' : 'text-slate-600'}
                       `}>
                         {elem.description}
@@ -176,7 +175,7 @@ const App = () => {
                       onClick={() => handleDelete(idx)}
                       className='flex-1 flex items-center justify-center gap-1.5 py-2.5 px-4 rounded-xl border border-rose-500 text-rose-800 bg-rose-200 hover:bg-rose-300 font-bold transition-all focus:ring-2 focus:ring-rose-500/30 focus:outline-none shadow-sm'
                     >
-                      <Trash2 className='w-[18px] h-[18px]' />
+                      <Trash2 className='w-4.5 h-4.5' />
                       Delete
                     </button>
                   </div>
