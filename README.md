@@ -2,8 +2,6 @@
 
 A simple and clean to-do list app built as my first React learning project. It covers the core concepts of React like state management, hooks, and component structure, paired with a responsive UI using Tailwind CSS.
 
-![Task Master](public/logo.png)
-
 ## Features
 
 - **Add tasks** with a title and an optional description
